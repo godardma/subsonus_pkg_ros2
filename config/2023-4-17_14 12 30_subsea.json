@@ -1,0 +1,331 @@
+{
+    "SubsonusAssemblies": {
+        "assemblies": [],
+        "device_assemblies": []
+    },
+    "SubsonusDevice": {
+        "devices": [
+            {
+                "AboutX": 0.0,
+                "AboutY": 0.0,
+                "AboutZ": 0.0,
+                "AcousticId": 2,
+                "DateCreated": 1577836827,
+                "DeviceAddress": {
+                    "desired_id": 2,
+                    "id": 0
+                },
+                "DisplayName": "subsea",
+                "HardwareId": "3C0EE301BF782A1E00000000",
+                "IPAddress": "192.168.2.200",
+                "InterrogationPeriod": 0.0,
+                "IsActiveNode": true,
+                "NodeId": 1,
+                "NodeTracked": false,
+                "NodeTypeId": 1,
+                "PortNumber": 16730,
+                "SubsonusMode": 1
+            },
+            {
+                "DateCreated": 1577851893,
+                "DeviceAddress": {
+                    "desired_id": 1,
+                    "id": 0
+                },
+                "DisplayName": "surface",
+                "HardwareId": "2C220725E8842E1647870400",
+                "IPAddress": "192.168.2.100",
+                "IsActiveNode": true,
+                "NodeId": 10,
+                "NodeTypeId": 1,
+                "PortNumber": 16730,
+                "SubsonusMode": 0
+            }
+        ],
+        "version": 1
+    },
+    "SubsonusNTP": {
+        "servers": [
+            "0.au.pool.ntp.org",
+            "1.au.pool.ntp.org",
+            "2.au.pool.ntp.org",
+            "3.au.pool.ntp.org"
+        ],
+        "version": 1
+    },
+    "SubsonusSettings": {
+        "accelerometers_range": "0",
+        "acoustic_id": "2",
+        "auto_magnetic_heading": "1",
+        "clear_authentication_next_boot": "0",
+        "depth_enable": "0",
+        "depth_height_enable": "1",
+        "depth_offset": "-0.879",
+        "device_address": "2",
+        "device_name": "subsea",
+        "display_coordinate_format": "0",
+        "display_history": "1000000",
+        "display_measure_selection": "1",
+        "display_offline_timeout": "0",
+        "display_show_grid_coordinates": "1",
+        "display_trail_history": "1000000",
+        "display_ui_scale": "2",
+        "enable_out_of_water": "1",
+        "enable_remote": "0",
+        "enable_strict_threshold": "0",
+        "extended_logging": "0",
+        "external_depth": "Option_0",
+        "external_ins": "Option_0",
+        "heading_alignment": "0",
+        "heading_fixed": "0.0",
+        "height_fixed": "0.0",
+        "lat_fixed": "49.3",
+        "log_file_max_size": "100",
+        "lon_fixed": "-4.4",
+        "magnetometers_range": "0",
+        "modem_data_buffer_timeout": "60",
+        "modem_data_max_buffer_size": "1024",
+        "modem_data_max_chunk_size": "48",
+        "modem_data_max_chunk_timeout": "0.01",
+        "modem_data_transmit_port": "16740",
+        "pitch_alignment": "0",
+        "pitch_fixed": "0.0",
+        "remote_data_depth": "2",
+        "remote_data_down": "3",
+        "remote_data_east": "3",
+        "remote_data_filter_status": "0",
+        "remote_data_heading": "2",
+        "remote_data_modem_data": "3",
+        "remote_data_north": "3",
+        "remote_data_pitch": "2",
+        "remote_data_roll": "2",
+        "remote_data_system_status": "0",
+        "remote_data_time": "0",
+        "remote_data_vos": "1",
+        "roll_alignment": "0",
+        "roll_fixed": "0.0",
+        "subsonus_mode": "1",
+        "time_output_NTP": "0",
+        "time_output_PTP": "0",
+        "time_source": "3",
+        "time_update_external_INS": "0",
+        "track_mode": "1",
+        "use_rp_internal": "0",
+        "user_authentication": "0",
+        "vehicle_profile": "8",
+        "vos_fixed": "1485.75",
+        "vos_mode": "0",
+        "vpn_port": "1194",
+        "vpn_protocol": "0"
+    },
+    "SubsonusStream": [
+        {
+            "address": "",
+            "device_address": -2,
+            "enable_client": false,
+            "enabled": false,
+            "messages": [
+                {
+                    "aperiodic": false,
+                    "frequency": "1.0 Hz",
+                    "id": 20,
+                    "name": "ANPP (020) - System State Packet",
+                    "period_ms": 1000,
+                    "read_only": false,
+                    "remote": false
+                },
+                {
+                    "aperiodic": true,
+                    "frequency": "50.0 Hz",
+                    "id": 24,
+                    "name": "ANPP (024) - Remote Track Packet",
+                    "period_ms": 20,
+                    "read_only": false,
+                    "remote": false
+                }
+            ],
+            "output_type": 0,
+            "port_id": 1,
+            "port_num": 16718,
+            "stream_protocol": 0,
+            "version": 2
+        },
+        {
+            "address": "",
+            "device_address": -2,
+            "enable_client": false,
+            "enabled": false,
+            "messages": [
+                {
+                    "aperiodic": false,
+                    "frequency": "1.0 Hz",
+                    "id": 20,
+                    "name": "ANPP (020) - System State Packet",
+                    "period_ms": 1000,
+                    "read_only": false,
+                    "remote": false
+                }
+            ],
+            "output_type": 0,
+            "port_id": 2,
+            "port_num": 3000,
+            "stream_protocol": 0,
+            "version": 2
+        },
+        {
+            "address": "192.168.2.2",
+            "device_address": -2,
+            "enable_client": true,
+            "enabled": true,
+            "messages": [
+                {
+                    "aperiodic": false,
+                    "frequency": "5.0 Hz",
+                    "id": 2,
+                    "name": "NMEA - GPGGA",
+                    "period_ms": 200,
+                    "read_only": false,
+                    "remote": false
+                },
+                {
+                    "aperiodic": false,
+                    "frequency": "5.0 Hz",
+                    "id": 3,
+                    "name": "NMEA - GPVTG",
+                    "period_ms": 200,
+                    "read_only": false,
+                    "remote": false
+                },
+                {
+                    "aperiodic": false,
+                    "frequency": "5.0 Hz",
+                    "id": 4,
+                    "name": "NMEA - GPRMC",
+                    "period_ms": 200,
+                    "read_only": false,
+                    "remote": false
+                },
+                {
+                    "aperiodic": false,
+                    "frequency": "5.0 Hz",
+                    "id": 5,
+                    "name": "NMEA - GPHDT",
+                    "period_ms": 200,
+                    "read_only": false,
+                    "remote": false
+                }
+            ],
+            "output_type": 1,
+            "port_id": 3,
+            "port_num": 27000,
+            "stream_protocol": 1,
+            "version": 2
+        },
+        {
+            "address": "",
+            "device_address": -2,
+            "enable_client": false,
+            "enabled": false,
+            "messages": [
+                {
+                    "aperiodic": false,
+                    "frequency": "5.0 Hz",
+                    "id": 2,
+                    "name": "NMEA - GPGGA",
+                    "period_ms": 200,
+                    "read_only": false,
+                    "remote": false
+                }
+            ],
+            "output_type": 1,
+            "port_id": 4,
+            "port_num": 16727,
+            "stream_protocol": 0,
+            "version": 2
+        },
+        {
+            "address": "",
+            "device_address": -2,
+            "enable_client": false,
+            "enabled": false,
+            "messages": [
+                {
+                    "aperiodic": false,
+                    "frequency": "5.0 Hz",
+                    "id": 20,
+                    "name": "ANPP (020) - System State Packet",
+                    "period_ms": 200,
+                    "read_only": false,
+                    "remote": false
+                }
+            ],
+            "output_type": 0,
+            "port_id": 5,
+            "port_num": 18000,
+            "stream_protocol": 0,
+            "version": 2
+        },
+        {
+            "address": "",
+            "device_address": -1,
+            "enable_client": false,
+            "enabled": false,
+            "messages": [
+                {
+                    "aperiodic": false,
+                    "frequency": "50.0 Hz",
+                    "id": 20,
+                    "name": "ANPP (020) - System State Packet",
+                    "period_ms": 20,
+                    "read_only": true,
+                    "remote": false
+                },
+                {
+                    "aperiodic": true,
+                    "frequency": "50.0 Hz",
+                    "id": 24,
+                    "name": "ANPP (024) - Remote Track Packet",
+                    "period_ms": 20,
+                    "read_only": true,
+                    "remote": false
+                },
+                {
+                    "aperiodic": false,
+                    "frequency": "50.0 Hz",
+                    "id": 28,
+                    "name": "ANPP (028) - Raw Sensors Packet",
+                    "period_ms": 20,
+                    "read_only": true,
+                    "remote": false
+                }
+            ],
+            "output_type": 0,
+            "port_id": 255,
+            "port_num": 0,
+            "stream_protocol": 0,
+            "version": 2
+        }
+    ],
+    "SubsonusUsers": [
+        {
+            "account_name": "Administrator",
+            "id": 2,
+            "password_hash": "c2e327894f0f8b4356e95d16988208a7a0f239569da28876875efdeed7713ac0",
+            "salt": "2la8L1}p[jWT1U?w^",
+            "settings": {},
+            "user_level": 300,
+            "user_name": "admin",
+            "version": 1
+        },
+        {
+            "account_name": "Operator",
+            "id": 3,
+            "password_hash": "4f56cf4ed075ea73ab4ec684373b930e27f0e11a4d1002617d2c32734f390026",
+            "salt": "3=M|pW2lrWFBCjMBF",
+            "settings": {},
+            "user_level": 200,
+            "user_name": "operator",
+            "version": 1
+        }
+    ]
+}

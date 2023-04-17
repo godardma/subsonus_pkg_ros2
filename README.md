@@ -8,6 +8,7 @@
 
 * :file_folder: [/src](src) : **dossier contenant les sources**
 * :file_folder: [/meshes](meshes) : **dossier contenant les modèles 3D utilisé pour visualiser les pose dans rviz2**
+* :file_folder: [/config](config) : **dossier contenant les fichiers de configuration des USBL**
 * :file_folder: [/launch](launch) : **dossier contenant les launcher, non fonctionnel à l'heure actuelle**
 * :spiral_notepad: [/README.md](README.md)
 
@@ -32,7 +33,7 @@ sudo apt-get install gpp
 ## Setup :
 * Setup les USBL
 
-    Pour fonctionner on utilisera deux USBL subsonus, un en config surface (master) à l'adresse 192.168.2.100 l'autre en config subsea (slave) à l'adresse 192.168.2.200
+    Pour fonctionner on utilisera deux USBL subsonus, un en config surface (master) à l'adresse 192.168.2.100 l'autre en config subsea (slave) à l'adresse 192.168.2.200. Les fichiers de configuration sont disponibles dans le dossier [config](config)
 
     On ajoutera un data stream sur le port TCP 19000 du subsonus de surface contenant :
     - System State Packet
