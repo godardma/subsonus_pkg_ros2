@@ -185,7 +185,7 @@ public:
       exit(EXIT_FAILURE);
     }
     else{
-      printf("ok host");
+      printf("ok host\n");
     }
 
     // Set the server's address
@@ -197,7 +197,7 @@ public:
     {
       printf("Could not connect to server\n");
     }else{
-      printf("ok socket");
+      printf("ok socket\n");
     }
 
     {
@@ -319,6 +319,7 @@ private:
 						/* this allows easy access to all the different values             */
 						if(decode_subsonus_system_state_packet(&system_state_packet, an_packet) == 0)
 						{
+              // cout<<system_state_packet.longitude<<endl;
               message.pose.position.x=-0.5;
               message.pose.position.y=0.;
               message.pose.position.z= 0.;
@@ -422,13 +423,13 @@ private:
     tf2::fromMsg(message.pose.orientation, quat_tf);
     tf2::Matrix3x3 m(quat_tf);
     m.getRotation(quat_tf);
-    for (int i=0;i<3;i++){
-      for (int j=0;j<3;j++){
-        cout<<m[i][j]<<" ";
-      }
-      cout<<endl;
-    }
-    cout<<endl;
+    // for (int i=0;i<3;i++){
+    //   for (int j=0;j<3;j++){
+    //     cout<<m[i][j]<<" ";
+    //   }
+    //   cout<<endl;
+    // }
+    // cout<<endl;
     tf2::Quaternion quat_tf_sub;
     tf2::fromMsg(message_sub.pose.orientation, quat_tf_sub);
     tf2::Matrix3x3 m_sub(quat_tf_sub);
@@ -443,14 +444,14 @@ private:
     m*=m_sub;
     m*=m_elec;
     //ici m est la matrice de rotation du repere map (bateau) vers le repere mesure elec
-    for (int i=0;i<3;i++){
-      for (int j=0;j<3;j++){
-        cout<<m[i][j]<<" ";
-      }
-      cout<<endl;
-    }
-    cout<<endl;
-    cout<<endl;
+    // for (int i=0;i<3;i++){
+    //   for (int j=0;j<3;j++){
+    //     cout<<m[i][j]<<" ";
+    //   }
+    //   cout<<endl;
+    // }
+    // cout<<endl;
+    // cout<<endl;
     auto message_rotation = std_msgs::msg::Float64MultiArray();
     std::vector<float> vec1 = {m[0][0],m[0][1],m[0][2],m[1][0],m[1][1],m[1][2],m[2][0],m[2][1],m[2][2]};
     message_rotation.layout.dim.push_back(std_msgs::msg::MultiArrayDimension());
