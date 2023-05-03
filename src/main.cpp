@@ -320,7 +320,7 @@ private:
 						if(decode_subsonus_system_state_packet(&system_state_packet, an_packet) == 0)
 						{
               // cout<<system_state_packet.longitude<<endl;
-              message.pose.position.x=-0.5;
+              message.pose.position.x=0.;
               message.pose.position.y=0.;
               message.pose.position.z= 0.;
               tf2::Quaternion q;
@@ -330,7 +330,7 @@ private:
               message.pose.orientation.y=q.y();
               message.pose.orientation.z=q.z();
               message.pose.orientation.w=q.w();
-              ts.transform.translation.x = -0.5;
+              ts.transform.translation.x = 0.0;
               ts.transform.translation.y = 0.0;
               ts.transform.translation.z = 0.0;
               ts.transform.rotation.x = q.x();
@@ -356,6 +356,7 @@ private:
               message_sub.pose.position.x=subsonus_track_packet.corrected_position[0];
               message_sub.pose.position.y=subsonus_track_packet.corrected_position[1];
               message_sub.pose.position.z=subsonus_track_packet.corrected_position[2];
+              publisher_sub->publish(message_sub);
               
               
               ts_sub.transform.translation.x =subsonus_track_packet.corrected_position[0];
@@ -363,7 +364,7 @@ private:
               ts_sub.transform.translation.z = subsonus_track_packet.corrected_position[2];
               
               tf_broadcaster_sub->sendTransform(ts_sub);
-							// printf("Remote Track Packet:\n");
+							printf("Remote Track Packet:\n");
 							// printf("\tLatitude = %f, Longitude = %f, Height = %f\n", subsonus_track_packet.latitude * RADIANS_TO_DEGREES, subsonus_track_packet.longitude * RADIANS_TO_DEGREES, subsonus_track_packet.height);
 							// printf("\tRange = %f, Azimuth = %f, Elevation = %f\n", subsonus_track_packet.range, subsonus_track_packet.azimuth * RADIANS_TO_DEGREES, subsonus_track_packet.elevation * RADIANS_TO_DEGREES);
 						}
@@ -375,7 +376,8 @@ private:
             if(decode_subsonus_remote_system_state_packet(&subsonus_remote_system_state_packet, an_packet) == 0)
 						{
             tf2::Quaternion q_sub;
-            q_sub.setRPY(subsonus_remote_system_state_packet.orientation[0] , subsonus_remote_system_state_packet.orientation[1] , subsonus_remote_system_state_packet.orientation[2] );
+            if (subsonus_remote_system_state_packet.orientation[0]!=0 && subsonus_remote_system_state_packet.orientation[1]!=0 && subsonus_remote_system_state_packet.orientation[2]!=0){
+            q_sub.setRPY(subsonus_remote_system_state_packet.orientation[0] , subsonus_remote_system_state_packet.orientation[1] -M_PI, subsonus_remote_system_state_packet.orientation[2] -M_PI);
             q_sub.normalize();
             message_sub.pose.orientation.x=q_sub.x();
             message_sub.pose.orientation.y=q_sub.y();
@@ -386,6 +388,10 @@ private:
             ts_sub.transform.rotation.z = q_sub.z();
             ts_sub.transform.rotation.w = q_sub.w();
             tf_broadcaster_sub->sendTransform(ts_sub);
+            publisher_sub->publish(message_sub);
+            }
+
+            printf("Remote System State Packet:\n");
             }
 					}
 					else
@@ -399,21 +405,22 @@ private:
 			}
 		}
 
-    ts_sub.transform.translation.x =5.; //a commenter
-    message_sub.pose.position.x=5.; //a commenter
-    ts_sub.transform.translation.z =5.; //a commenter
-    message_sub.pose.position.z=5.; //a commenter 
-    tf2::Quaternion q_sub;
-    q_sub.setRPY(M_PI,0,0);
-    q_sub.normalize();
-    ts_sub.transform.rotation.x =q_sub.x(); //a commenter
-    message_sub.pose.orientation.x=q_sub.x(); //a commenter
-    ts_sub.transform.rotation.y =q_sub.y(); //a commenter
-    message_sub.pose.orientation.y=q_sub.y(); //a commenter
-    ts_sub.transform.rotation.z =q_sub.z(); //a commenter
-    message_sub.pose.orientation.z=q_sub.z(); //a commenter
-    ts_sub.transform.rotation.w =q_sub.w(); //a commenter
-    message_sub.pose.orientation.w=q_sub.w(); //a commenter
+    // ts_sub.transform.translation.x =5.; //a commenter
+    // message_sub.pose.position.x=5.; //a commenter
+    // ts_sub.transform.translation.z =5.; //a commenter
+    // message_sub.pose.position.z=5.; //a commenter 
+    // tf2::Quaternion q_sub;
+    // q_sub.setRPY(M_PI,0,0);
+    // q_sub.normalize();
+    // ts_sub.transform.rotation.x =q_sub.x(); //a commenter
+    // message_sub.pose.orientation.x=q_sub.x(); //a commenter
+    // ts_sub.transform.rotation.y =q_sub.y(); //a commenter
+    // message_sub.pose.orientation.y=q_sub.y(); //a commenter
+    // ts_sub.transform.rotation.z =q_sub.z(); //a commenter
+    // message_sub.pose.orientation.z=q_sub.z(); //a commenter
+    // ts_sub.transform.rotation.w =q_sub.w(); //a commenter
+    // message_sub.pose.orientation.w=q_sub.w(); //a commenter
+
     tf_broadcaster_sub->sendTransform(ts_sub);
     tf_broadcaster_elec->sendTransform(ts_elec);
     publisher_->publish(message);
@@ -423,13 +430,7 @@ private:
     tf2::fromMsg(message.pose.orientation, quat_tf);
     tf2::Matrix3x3 m(quat_tf);
     m.getRotation(quat_tf);
-    // for (int i=0;i<3;i++){
-    //   for (int j=0;j<3;j++){
-    //     cout<<m[i][j]<<" ";
-    //   }
-    //   cout<<endl;
-    // }
-    // cout<<endl;
+
     tf2::Quaternion quat_tf_sub;
     tf2::fromMsg(message_sub.pose.orientation, quat_tf_sub);
     tf2::Matrix3x3 m_sub(quat_tf_sub);
