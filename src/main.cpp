@@ -376,7 +376,7 @@ private:
             if(decode_subsonus_remote_system_state_packet(&subsonus_remote_system_state_packet, an_packet) == 0)
 						{
             tf2::Quaternion q_sub;
-            if (subsonus_remote_system_state_packet.orientation[0]!=0 && subsonus_remote_system_state_packet.orientation[1]!=0 && subsonus_remote_system_state_packet.orientation[2]!=0){
+            if (subsonus_remote_system_state_packet.orientation[0]!=0 || subsonus_remote_system_state_packet.orientation[1]!=0 || subsonus_remote_system_state_packet.orientation[2]!=0){
             q_sub.setRPY(subsonus_remote_system_state_packet.orientation[0] , subsonus_remote_system_state_packet.orientation[1] -M_PI, subsonus_remote_system_state_packet.orientation[2] -M_PI);
             q_sub.normalize();
             message_sub.pose.orientation.x=q_sub.x();
@@ -386,10 +386,10 @@ private:
             ts_sub.transform.rotation.x = q_sub.x();
             ts_sub.transform.rotation.y = q_sub.y();
             ts_sub.transform.rotation.z = q_sub.z();
-            ts_sub.transform.rotation.w = q_sub.w();
+            ts_sub.transform.rotation.w = q_sub.w();}
             tf_broadcaster_sub->sendTransform(ts_sub);
             publisher_sub->publish(message_sub);
-            }
+            
 
             printf("Remote System State Packet:\n");
             }
