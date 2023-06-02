@@ -131,15 +131,18 @@ public:
   geometry_msgs::msg::TransformStamped ts_elec;
   visualization_msgs::msg::Marker marker;
   tf2::Quaternion q_elec;
-
+  float alpha;
+  float beta;
+  float gamma;
   
   MinimalPublisher()
   : Node("minimal_publisher"), count_(0)
   {
+    
     ts.header.frame_id = "map";
     ts.child_frame_id = "surface";
 
-    ts_sub.header.frame_id = "surface";
+    ts_sub.header.frame_id = "map";
     ts_sub.child_frame_id = "ROV";
 
     ts_elec.header.frame_id = "ROV";
@@ -168,6 +171,7 @@ public:
     char *hostname;
     hostname = "192.168.2.100";
     int port = 19000;
+    // int port = 16718;
 
 
     tcp_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -312,6 +316,7 @@ private:
 				/* decode all the packets in the buffer */
 				while((an_packet = an_packet_decode_dynamic(&an_decoder)) != NULL)
 				{
+          // printf("test %u\n",an_packet->id);
 					if(an_packet->id == packet_id_subsonus_system_state) /* system state packet */
 					{
 						// printf("Packet ID %u of Length %u\n", an_packet->id, an_packet->length);
@@ -324,7 +329,10 @@ private:
               message.pose.position.y=0.;
               message.pose.position.z= 0.;
               tf2::Quaternion q;
-              q.setRPY(system_state_packet.orientation[0], system_state_packet.orientation[1] +M_PI, system_state_packet.orientation[2] +M_PI );
+              alpha=system_state_packet.orientation[0];
+              beta=system_state_packet.orientation[1];
+              gamma=system_state_packet.orientation[2];
+              q.setRPY(alpha,beta, gamma );
 							q.normalize();
               message.pose.orientation.x=q.x();
               message.pose.orientation.y=q.y();
@@ -377,7 +385,16 @@ private:
 						{
             tf2::Quaternion q_sub;
             if (subsonus_remote_system_state_packet.orientation[0]!=0 || subsonus_remote_system_state_packet.orientation[1]!=0 || subsonus_remote_system_state_packet.orientation[2]!=0){
-            q_sub.setRPY(subsonus_remote_system_state_packet.orientation[0] , subsonus_remote_system_state_packet.orientation[1] -M_PI, subsonus_remote_system_state_packet.orientation[2] -M_PI);
+            float alphap=subsonus_remote_system_state_packet.orientation[0];
+            float betap=subsonus_remote_system_state_packet.orientation[1];
+            float gammap=subsonus_remote_system_state_packet.orientation[2];
+            // if (alphap>M_PI){alphap=-2*M_PI+alphap;}
+            // else if (alphap<-M_PI){alphap=2*M_PI+alphap;}
+            // if (betap>M_PI){betap=-2*M_PI+betap;}
+            // else if (betap<-M_PI){betap=2*M_PI+betap;}
+            // if (gammap>M_PI){gammap=-2*M_PI+gammap;}
+            // else if (gammap<-M_PI){gammap=2*M_PI+gammap;}
+            q_sub.setRPY(alphap,betap,gammap);
             q_sub.normalize();
             message_sub.pose.orientation.x=q_sub.x();
             message_sub.pose.orientation.y=q_sub.y();
@@ -386,12 +403,20 @@ private:
             ts_sub.transform.rotation.x = q_sub.x();
             ts_sub.transform.rotation.y = q_sub.y();
             ts_sub.transform.rotation.z = q_sub.z();
-            ts_sub.transform.rotation.w = q_sub.w();}
+            ts_sub.transform.rotation.w = q_sub.w();
+
+            printf("alphap (deg) %f\n",(alphap - alpha)*180./M_PI);
+            printf("betap (deg) %f\n",(betap-beta)*180./M_PI);
+            printf("gammap (deg) %f\n",(gammap-gamma)*180./M_PI);
+            }
+            else{
+              printf("Message de State vide: %u ",subsonus_remote_system_state_packet.data_valid.r);
+            }
             tf_broadcaster_sub->sendTransform(ts_sub);
             publisher_sub->publish(message_sub);
             
 
-            printf("Remote System State Packet:\n");
+            // printf("Remote System State Packet:\n");
             }
 					}
 					else

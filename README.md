@@ -8,7 +8,7 @@
 
 * :file_folder: [/src](src) : **dossier contenant les sources**
 * :file_folder: [/meshes](meshes) : **dossier contenant les modèles 3D utilisé pour visualiser les pose dans rviz2**
-* :file_folder: [/config](config) : **dossier contenant les fichiers de configuration des USBL**
+* :file_folder: [/config](config) : **dossier contenant les fichiers de configuration des USBL et de RVIZ2**
 * :file_folder: [/launch](launch) : **dossier contenant les launcher, non fonctionnel à l'heure actuelle**
 * :spiral_notepad: [/README.md](README.md)
 
