@@ -142,7 +142,7 @@ public:
     ts.header.frame_id = "map";
     ts.child_frame_id = "surface";
 
-    ts_sub.header.frame_id = "map";
+    ts_sub.header.frame_id = "surface";
     ts_sub.child_frame_id = "ROV";
 
     ts_elec.header.frame_id = "ROV";
@@ -388,13 +388,20 @@ private:
             float alphap=subsonus_remote_system_state_packet.orientation[0];
             float betap=subsonus_remote_system_state_packet.orientation[1];
             float gammap=subsonus_remote_system_state_packet.orientation[2];
-            // if (alphap>M_PI){alphap=-2*M_PI+alphap;}
-            // else if (alphap<-M_PI){alphap=2*M_PI+alphap;}
-            // if (betap>M_PI){betap=-2*M_PI+betap;}
-            // else if (betap<-M_PI){betap=2*M_PI+betap;}
-            // if (gammap>M_PI){gammap=-2*M_PI+gammap;}
-            // else if (gammap<-M_PI){gammap=2*M_PI+gammap;}
-            q_sub.setRPY(alphap,betap,gammap);
+
+            tf2::Quaternion q_map_to_sub;
+            tf2::Quaternion q_map_to_surf;
+
+            tf2::fromMsg(message.pose.orientation, q_map_to_surf);
+            q_map_to_sub.setRPY(alphap,betap,gammap);
+
+            tf2::Quaternion q_surf_to_map;
+            q_surf_to_map=q_map_to_surf;
+            q_surf_to_map[3]=-q_surf_to_map[3];
+
+            q_sub=q_map_to_sub*q_surf_to_map;
+
+
             q_sub.normalize();
             message_sub.pose.orientation.x=q_sub.x();
             message_sub.pose.orientation.y=q_sub.y();
@@ -405,9 +412,7 @@ private:
             ts_sub.transform.rotation.z = q_sub.z();
             ts_sub.transform.rotation.w = q_sub.w();
 
-            printf("alphap (deg) %f\n",(alphap - alpha)*180./M_PI);
-            printf("betap (deg) %f\n",(betap-beta)*180./M_PI);
-            printf("gammap (deg) %f\n",(gammap-gamma)*180./M_PI);
+
             }
             else{
               printf("Message de State vide: %u ",subsonus_remote_system_state_packet.data_valid.r);
