@@ -161,11 +161,13 @@ public:
     tf_broadcaster_elec = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
     //remplir ici la transformée entre le repère USBL fond et mesure elec
-    q_elec.setRPY(0,0, -M_PI/4);
+    q_elec.setRPY(0,0,0);
     q_elec.normalize();
+    ts_elec.transform.rotation.x =q_elec.x();
+    ts_elec.transform.rotation.y =q_elec.y();
     ts_elec.transform.rotation.z =q_elec.z();
     ts_elec.transform.rotation.w =q_elec.w();
-    ts_elec.transform.translation.x =1.;
+    ts_elec.transform.translation.z =0.15;
 
     unsigned int bytes_received = 0;
     char *hostname;
@@ -398,8 +400,9 @@ private:
             tf2::Quaternion q_surf_to_map;
             q_surf_to_map=q_map_to_surf;
             q_surf_to_map[3]=-q_surf_to_map[3];
+            q_surf_to_map.normalize();
 
-            q_sub=q_map_to_sub*q_surf_to_map;
+            q_sub=q_surf_to_map*q_map_to_sub;
 
 
             q_sub.normalize();
