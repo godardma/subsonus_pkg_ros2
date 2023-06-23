@@ -11,34 +11,45 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+#pragma comment(lib,"Ws2_32.lib")
+
 #include <chrono>
 #include <functional>
 #include <memory>
 #include <string>
 
-#include <time.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/time.h>
+
+//#include "unistd.h"
+
+#include "getopt.h" /* getopt at: https://gist.github.com/ashelly/7776712 */
+#include <process.h> /* for getpid() and the exec..() family */
+#include <direct.h> /* for _getcwd() and _chdir() */
+
+#include "rclcpp/rclcpp.hpp"
+//#include <sys/types.h>
+//#include <sys/time.h>
+
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846)
 #endif
 
 #ifdef _WIN32
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #endif
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
 #include "an_packet_protocol.h"
 #include "subsonus_packets.h"
@@ -46,7 +57,7 @@
 #define RADIANS_TO_DEGREES (180.0/M_PI)
 
 
-#include "rclcpp/rclcpp.hpp"
+
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include <visualization_msgs/msg/marker.hpp>
 #include <ament_index_cpp/get_package_share_directory.hpp>
@@ -55,9 +66,13 @@
 #include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
 
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+
+
 
 using namespace std;
+
+#define DEFAULT_BUFLEN 1024
 
 
 /* This example creates a subclass of Node and uses std::bind() to register a
@@ -161,13 +176,13 @@ public:
     tf_broadcaster_elec = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
     //remplir ici la transformée entre le repère USBL fond et mesure elec
-    q_elec.setRPY(0,0,0);
+    q_elec.setRPY(0, 0, 0);
     q_elec.normalize();
-    ts_elec.transform.rotation.x =q_elec.x();
-    ts_elec.transform.rotation.y =q_elec.y();
-    ts_elec.transform.rotation.z =q_elec.z();
-    ts_elec.transform.rotation.w =q_elec.w();
-    ts_elec.transform.translation.z =0.15;
+    ts_elec.transform.rotation.x = q_elec.x();
+    ts_elec.transform.rotation.y = q_elec.y();
+    ts_elec.transform.rotation.z = q_elec.z();
+    ts_elec.transform.rotation.w = q_elec.w();
+    ts_elec.transform.translation.z = 0.15;
 
     unsigned int bytes_received = 0;
     char *hostname;
@@ -214,13 +229,15 @@ public:
         fd_set readfds;
         t.tv_sec = 0;
         t.tv_usec = 50000;
-        unsigned char buf[1024];
+        //unsigned char buf[1024];
+        char recvbuf[DEFAULT_BUFLEN];
+        int recvbuflen = DEFAULT_BUFLEN;
         FD_ZERO(&readfds);
         FD_SET(tcp_socket, &readfds);
         select(tcp_socket + 1, &readfds, NULL, NULL, &t);
         if(FD_ISSET(tcp_socket, &readfds))
         {
-          flush_length = recv(tcp_socket, buf, sizeof(buf), 0);
+          flush_length = recv(tcp_socket, recvbuf, 1024, 0);
           if(flush_length < 100)
           {
             break;
@@ -305,7 +322,10 @@ private:
 		{
 
 #ifdef _WIN32
-			bytes_received = recv(tcp_socket,an_decoder_pointer(&an_decoder), an_decoder_size(&an_decoder),0);
+            auto recu=an_decoder_pointer(&an_decoder);
+            char* recuchar = (char*)recu;
+            auto reclen=an_decoder_size(&an_decoder);
+			bytes_received = recv(tcp_socket, recuchar,reclen,0);
 #else
 			bytes_received = recv(tcp_socket, an_decoder_pointer(&an_decoder), an_decoder_size(&an_decoder), MSG_DONTWAIT);
 #endif
@@ -390,20 +410,24 @@ private:
             float alphap=subsonus_remote_system_state_packet.orientation[0];
             float betap=subsonus_remote_system_state_packet.orientation[1];
             float gammap=subsonus_remote_system_state_packet.orientation[2];
-
+            // if (alphap>M_PI){alphap=-2*M_PI+alphap;}
+            // else if (alphap<-M_PI){alphap=2*M_PI+alphap;}
+            // if (betap>M_PI){betap=-2*M_PI+betap;}
+            // else if (betap<-M_PI){betap=2*M_PI+betap;}
+            // if (gammap>M_PI){gammap=-2*M_PI+gammap;}
+            // else if (gammap<-M_PI){gammap=2*M_PI+gammap;}
             tf2::Quaternion q_map_to_sub;
             tf2::Quaternion q_map_to_surf;
 
             tf2::fromMsg(message.pose.orientation, q_map_to_surf);
-            q_map_to_sub.setRPY(alphap,betap,gammap);
+            q_map_to_sub.setRPY(alphap, betap, gammap);
 
             tf2::Quaternion q_surf_to_map;
-            q_surf_to_map=q_map_to_surf;
-            q_surf_to_map[3]=-q_surf_to_map[3];
+            q_surf_to_map = q_map_to_surf;
+            q_surf_to_map[3] = -q_surf_to_map[3];
             q_surf_to_map.normalize();
 
-            q_sub=q_surf_to_map*q_map_to_sub;
-
+            q_sub = q_surf_to_map * q_map_to_sub;
 
             q_sub.normalize();
             message_sub.pose.orientation.x=q_sub.x();
@@ -415,7 +439,9 @@ private:
             ts_sub.transform.rotation.z = q_sub.z();
             ts_sub.transform.rotation.w = q_sub.w();
 
-
+            /*printf("alphap (deg) %f\n",(alphap - alpha)*180./M_PI);
+            printf("betap (deg) %f\n",(betap-beta)*180./M_PI);
+            printf("gammap (deg) %f\n",(gammap-gamma)*180./M_PI);*/
             }
             else{
               printf("Message de State vide: %u ",subsonus_remote_system_state_packet.data_valid.r);
@@ -487,7 +513,16 @@ private:
     // cout<<endl;
     // cout<<endl;
     auto message_rotation = std_msgs::msg::Float64MultiArray();
-    std::vector<float> vec1 = {m[0][0],m[0][1],m[0][2],m[1][0],m[1][1],m[1][2],m[2][0],m[2][1],m[2][2]};
+    float m00 = m[0][0];
+    float m01 = m[0][1];
+    float m02 = m[0][2];
+    float m10 = m[1][0];
+    float m11 = m[1][1];
+    float m12 = m[1][2];
+    float m20 = m[2][0];
+    float m21 = m[2][1];
+    float m22 = m[2][2];
+    std::vector<float> vec1 = {m00,m01,m02,m10,m11,m12,m20,m21,m22};
     message_rotation.layout.dim.push_back(std_msgs::msg::MultiArrayDimension());
     message_rotation.layout.dim[0].size = 3;
     message_rotation.layout.dim[0].label = "ligne";

@@ -19,7 +19,7 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
-add_executable(talker src/main.cpp src/an_packet_protocol.c src/subsonus_packets.c)
+add_executable(talker src/main.cpp src/an_packet_protocol.c src/subsonus_packets.c src/getopt.c)
 ament_target_dependencies(talker rclcpp std_msgs geometry_msgs tf2_ros tf2 visualization_msgs tf2_geometry_msgs)
 
 install(TARGETS
