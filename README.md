@@ -1,5 +1,7 @@
 # subsonus_pkg 
 
+Package ROS2 permettant l'utilsation des USBL Subsonus 
+
 ## Auteur :
 
 :student: Maël GODARD <mael.godard@ensta-bretagne.org> (FISE 2023)
